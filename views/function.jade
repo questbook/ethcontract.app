@@ -1,0 +1,74 @@
+extends layout
+
+block content
+  script(src="/javascripts/web3.min.js")
+  script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+  script.
+    const w3 = new Web3(web3.currentProvider);
+    const contract = new w3.eth.Contract(!{JSON.stringify(abiJson)}, "#{address}");
+    const args1 = !{JSON.stringify(fun.inputs)}
+
+    async function wrappedRun() {
+      try {
+        if(typeof window.ethereum === "undefined"){
+          alert("Please install Metamask");
+          window.location.href = "https://metamask.io";
+        }
+        window.ethereum.enable();
+        await run();
+      } catch(e){
+        $("#response").val(e.toString());
+      }
+    }
+
+    async function run() {
+      try{
+        const args2 = args1.map(a => $("#"+a.name).val());
+        const runnable = contract.methods["#{fun.name}"].apply(null, args2);
+        if("#{fun.stateMutability}" === "pure" || "#{fun.stateMutability}" === "view"){
+          const response = await runnable.call({ from: w3.currentProvider.selectedAddress})
+          console.log(response);
+          $("#response").html(JSON.stringify(response));
+        }
+        else if ("#{fun.stateMutability}" !== "payable"){
+          $("#response").html("Transaction Pending...");
+          const response = await runnable.send({ from: w3.currentProvider.selectedAddress})
+          console.log(response);
+          $("#response").html("Transaction successful \n\n"+JSON.stringify(response));
+        }
+        else {
+          //payable
+          $("#response").html("Transaction Pending...");
+          const response = await runnable.send({ from: w3.currentProvider.selectedAddress, value: w3.utils.toWei($("#value").val(), 'ether')});
+          console.log(response);
+          $("#response").html("Transaction successful \n\n"+JSON.stringify(response));
+        }
+      }
+      catch(e){
+        console.log(e, e.toString());
+        $("#response").html(e.toString());
+      }
+    }
+
+
+  .container
+    h1= fun.name.replace( /([A-Z])/g, " $1" )
+    a(href="/"+address+"?abi="+abiEncoded) #[i(data="close")] Back to all functions
+    .inputContainer
+      each inp in fun.inputs 
+        .card
+          h3= inp.name.replace( /([A-Z])/g, " $1" )
+          input(placeholder=inp.name.replace( /([A-Z])/g, " $1" )+"("+fun.type+")" id=inp.name)
+
+      if fun.stateMutability === "payable"
+        .card 
+          h3 This function expects a payment
+          input(placeholder="Amount to send in Ethers" id="value")
+      .card
+        h3 Execute Transaction
+        button( onclick="wrappedRun()") Run
+        br
+        br
+        pre(id="response").
+          Fill in the parameters and tap run
+

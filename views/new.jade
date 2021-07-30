@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  .container
+    h1 Explore a contract 
+    p Auto generated UI for contracts
+    form(action="/new", method="post") 
+        .card
+            h3 Contract Address
+            input(name="address")
+        .card
+            h3 Contract ABI 
+            textarea(name="abi")
+        br
+        button Explore Contract
+        

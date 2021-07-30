@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  .container
+    p Contract Address :
+    h2= address
+    br
+    p Available Functions : 
+    .tileContainer
+      each f in functions
+        a.tile( href="/#{address}/#{f.name}?abi=#{abiEncoded}") 
+          span= f.name.replace( /([A-Z])/g, " $1" )
+        
