@@ -1,13 +1,90 @@
 extends layout
 
 block content
+  script(src="/javascripts/ethers-5.1.umd.min.js")
+  script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+  script.
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    let network =  '#{network}';
+
+    async function checkNetwork() {
+      try {
+        if(typeof window.ethereum === "undefined"){
+          alert("Please install Metamask");
+          window.location.href = "https://metamask.io";
+        }
+        window.ethereum.enable();
+        const { chainId, name } = await provider.getNetwork()
+        $.getJSON("/javascripts/constants.json", async(data) => {
+          if(name !== network && data[network]) {
+            $("#network").show();
+            $("#switch-btn").show();
+          } else if (name !== network) {
+            $("#network").show();
+            $("#switch-btn").hide();
+          } else {
+            $("#network").hide();
+            $("#switch-btn").hide();
+          }
+        });
+      } catch(e){
+      }
+    }
+
+    async function addNetwork() {
+      $.getJSON("/javascripts/constants.json", async(data) => {
+        let params;
+        if(data[network]) {
+          params = data[network];
+          try {
+            await ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: params.chainId }],
+            });
+          } catch (addError) {
+            await ethereum.request({
+              method: 'wallet_addEthereumChain',
+              params: [params]
+            });
+            window.location.reload();
+          }
+        }
+      });
+    }
+
+    $(function(){
+      if(network === 'mainnet') {
+        network = 'homestead';
+      } else if (network === 'polygon') {
+        network = 'matic';
+      }
+      checkNetwork();
+      if(window.ethereum){
+        window.ethereum.on('accountsChanged', () => {
+          window.location.reload();
+        });
+
+        window.ethereum.on('chainChanged', () => {
+          window.location.reload();
+        });
+
+        window.ethereum.on('disconnect', () => {
+          window.location.reload();
+        });
+      }
+
+    });
+
   .container
     p Contract Address :
     h2= title
+    p(id="network" class="error") Connect to #{network} network
+    button(onclick="addNetwork()" class="switch-btn" id="switch-btn") Switch/Add #{network} network to metamask
     br
     p Available Functions : 
     .tileContainer
       each f in functions
         a.tile( href="/#{address}/#{f.name}?abi=#{abiEncoded}") 
           span= f.name.replace( /([A-Z])/g, " $1" )
-        
+
