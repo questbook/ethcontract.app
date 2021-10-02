@@ -1,4 +1,49 @@
 {
+  "homestead": {
+    "chainId": "0x1",
+    "chainName": "Ethereum",
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18
+    }
+  },
+  "ropsten": {
+    "chainId": "0x3",
+    "chainName": "Ropsten",
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18
+    }
+  },
+  "rinkeby": {
+    "chainId": "0x4",
+    "chainName": "Rinkeby",
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18
+    }
+  },
+  "goerli": {
+    "chainId": "0x5",
+    "chainName": "Goerli",
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18
+    }
+  },
+  "kovan": {
+    "chainId": "0x2A",
+    "chainName": "Kovan",
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18
+    }
+  },
   "matic": {
     "chainId": "0x89",
     "chainName": "Matic",

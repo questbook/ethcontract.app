@@ -37,12 +37,13 @@ router.get('/new', async function (req, res) {
 
 router.post('/new', async (req, res) => {
   const hash = await storeAbi(JSON.parse(req.body.abi));
-  res.redirect('/' + req.body.address + '/?abi=' + hash + '&network=' + req.body.network);
+  let network = req.body.network;
+  res.redirect(`/${req.body.address}/?abi=${hash}&network=${network}`);
 });
 
 router.get('/:address', async function (req, res) {
   const abiJson = await retrieveAbi(req.query.abi);
-  const network = req.query.network;
+  let network = req.query.network;
   let title = req.params.address;
   const parts = req.hostname.split('.');
   if (parts.length === 3) {
@@ -56,6 +57,7 @@ router.get('/:address', async function (req, res) {
     variables,
     address: req.params.address,
     abiEncoded: req.query.abi,
+    abiJson,
     title,
     network,
   });
@@ -63,13 +65,16 @@ router.get('/:address', async function (req, res) {
 
 router.get('/:address/:function', async function (req, res) {
   try {
+    console.log(req.query);
     const abiJson = await retrieveAbi(req.query.abi);
+    let network = req.query.network;
     const fun = abiJson.filter((a) => a.type === 'function' && a.name === req.params.function)[0];
     res.render('function', {
       fun,
       address: req.params.address,
       abiJson,
       abiEncoded: req.query.abi,
+      network,
     });
   } catch (e) {
     console.log(e);

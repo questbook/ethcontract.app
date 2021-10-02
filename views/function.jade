@@ -1,11 +1,9 @@
 extends layout
 
 block content
-  script(src="/javascripts/web3.min.js")
+  script(src="/javascripts/ethers-5.1.umd.min.js")
   script(src="https://code.jquery.com/jquery-3.6.0.min.js")
   script.
-    const w3 = new Web3(web3.currentProvider);
-    const contract = new w3.eth.Contract(!{JSON.stringify(abiJson)}, "#{address}");
     const args1 = !{JSON.stringify(fun.inputs)}
 
     async function wrappedRun() {
@@ -24,24 +22,19 @@ block content
     async function run() {
       try{
         const args2 = args1.map(a => $("#"+a.name).val());
-        const runnable = contract.methods["#{fun.name}"].apply(null, args2);
-        if("#{fun.stateMutability}" === "pure" || "#{fun.stateMutability}" === "view"){
-          const response = await runnable.call({ from: w3.currentProvider.selectedAddress})
+        if("#{fun.stateMutability}" === "pure" || "#{fun.stateMutability}" === "view" || "#{fun.stateMutability}" !== "payable"){
+          $("#response").html("Transaction Pending...");
+          const response = await contract["#{fun.name}"](...args2);
           console.log(response);
           $("#response").html(JSON.stringify(response));
-        }
-        else if ("#{fun.stateMutability}" !== "payable"){
-          $("#response").html("Transaction Pending...");
-          const response = await runnable.send({ from: w3.currentProvider.selectedAddress})
-          console.log(response);
-          $("#response").html("Transaction successful \n\n"+JSON.stringify(response));
         }
         else {
           //payable
           $("#response").html("Transaction Pending...");
-          const response = await runnable.send({ from: w3.currentProvider.selectedAddress, value: w3.utils.toWei($("#value").val(), 'ether')});
-          console.log(response);
-          $("#response").html("Transaction successful \n\n"+JSON.stringify(response));
+          const response = await contract["#{fun.name}"](...args2, { value: ethers.utils.parseEther($("#value").val()) });
+          const txReceipt = await response.wait();
+          console.log(txReceipt);
+          $("#response").html("Transaction successful \n\n"+JSON.stringify(txReceipt));
         }
       }
       catch(e){
@@ -53,7 +46,8 @@ block content
 
   .container
     h1= fun.name.replace( /([A-Z])/g, " $1" )
-    a(href="/"+address+"?abi="+abiEncoded) #[i(data="close")] Back to all functions
+    a(href="/"+address+"?abi="+abiEncoded+"&network="+network) #[i(data="close")] Back to all functions
+    include ./walletSetup
     .inputContainer
       each inp in fun.inputs 
         .card
