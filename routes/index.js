@@ -1,39 +1,55 @@
 var express = require('express');
 var router = express.Router();
-var axios = require('axios');
 var { storeAbi, retrieveAbi } = require('../models/abi');
 
 var Web3 = require('web3');
+var { getAbiFromEtherscan } = require('../lib');
 var web3 = new Web3(process.env.INFURA);
 
 /* GET home page. */
 router.get('/', async function(req, res, next) {
   try {
-    const parts = req.hostname.split(".");
-    if(parts.length === 3){
-      const name = parts[0]+".eth";
+    const parts = req.hostname.split('.');
+    if (parts.length === 3) {
+      const name = parts[0] + '.eth';
       const address = await web3.eth.ens.getAddress(name);
-      const abi = JSON.parse((await axios.get('https://api.etherscan.io/api?module=contract&action=getabi&address='+address)).data.result);
+      const abi = await getAbiFromEtherscan(address);
       const hash = await storeAbi(abi);
 
-      return res.redirect('/'+address+"?abi="+hash);	    
+      return res.redirect('/' + address + '?abi=' + hash);
     }
-  }
-  catch(e){
-	  console.log(e);
-	  return res.render('error');
+  }catch(e){
+    console.log(e);
+    return res.render('error');
   }
   res.render('new', { title: 'Express' });
 });
 
 router.get('/new', async function(req, res){
   res.render('new');
-})
+});
 
-router.post('/new', async (req, res)=> {
-  const hash = await storeAbi(JSON.parse(req.body.abi));
-  res.redirect('/'+req.body.address+"/?abi="+hash);
-})
+router.post('/new', async (req, res) => {
+  let abi = req.body.abi;
+  let address = req.body.address;
+
+  if (!address) {
+    return res.render('error', { error: 'Address is required' });
+  }
+
+  if (!abi) {
+    abi = await getAbiFromEtherscan(address);
+  }
+
+  if (!abi) {
+    return res.render('error', {
+      error: 'Could not automatically fetch ABI.',
+    });
+  }
+
+  const hash = await storeAbi(abi);
+  res.redirect('/' + req.body.address + '/?abi=' + hash);
+});
 
 router.get('/:address', async function(req, res) {
   const abiJson = await retrieveAbi(req.query.abi);
