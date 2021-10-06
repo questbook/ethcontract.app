@@ -7,7 +7,7 @@ var { getAbiFromEtherscan } = require('../lib');
 var web3 = new Web3(process.env.INFURA);
 
 /* GET home page. */
-router.get('/', async function(req, res, next) {
+router.get('/', async function (req, res, next) {
   try {
     const parts = req.hostname.split('.');
     if (parts.length === 3) {
@@ -18,14 +18,14 @@ router.get('/', async function(req, res, next) {
 
       return res.redirect('/' + address + '?abi=' + hash);
     }
-  }catch(e){
+  } catch (e) {
     console.log(e);
     return res.render('error');
   }
-  res.render('new', { title: 'Express' });
+  res.render('main');
 });
 
-router.get('/new', async function(req, res){
+router.get('/new', async function (req, res) {
   res.render('new');
 });
 
@@ -51,31 +51,53 @@ router.post('/new', async (req, res) => {
   res.redirect('/' + req.body.address + '/?abi=' + hash);
 });
 
-router.get('/:address', async function(req, res) {
+router.get('/:address', async function (req, res) {
   const abiJson = await retrieveAbi(req.query.abi);
   let title = req.params.address;
-  const parts = req.hostname.split(".");
-  if(parts.length === 3){
-    title += " ("+parts[0]+".eth)";
+  const pinned = req.query.pinned;
+  const parts = req.hostname.split('.');
+  if (parts.length === 3) {
+    title += ' (' + parts[0] + '.eth)';
   }
 
-  const functions = abiJson.filter(a => a.type === "function");
-  const variables = abiJson.filter(a => a.type !== "function" && a.type !== "constructor");
-  res.render('index',  { functions, variables, address: req.params.address, abiEncoded: req.query.abi, title });
+  const functions = abiJson.filter((a) => a.type === 'function');
+  if (pinned) {
+    pinned
+      .split(',')
+      .reverse()
+      .forEach((func) =>
+        functions.unshift(
+          functions.splice(
+            functions.findIndex((f) => f.name === func),
+            1,
+          )[0],
+        ),
+      );
+  }
+  const variables = abiJson.filter((a) => a.type !== 'function' && a.type !== 'constructor');
+  res.render('index', {
+    functions,
+    variables,
+    address: req.params.address,
+    abiEncoded: req.query.abi,
+    title,
+  });
 });
 
-router.get('/:address/:function', async function(req, res) {
+router.get('/:address/:function', async function (req, res) {
   try {
-  const abiJson = await retrieveAbi(req.query.abi);
-  const fun = abiJson.filter(a => a.type === "function" && a.name === req.params.function)[0];
-  res.render('function',  { fun, address: req.params.address, abiJson, abiEncoded: req.query.abi });
-  }
-  catch(e){
+    const abiJson = await retrieveAbi(req.query.abi);
+    const fun = abiJson.filter((a) => a.type === 'function' && a.name === req.params.function)[0];
+    res.render('function', {
+      fun,
+      address: req.params.address,
+      abiJson,
+      abiEncoded: req.query.abi,
+    });
+  } catch (e) {
     console.log(e);
     res.render('error');
   }
 });
-
-
 
 module.exports = router;
