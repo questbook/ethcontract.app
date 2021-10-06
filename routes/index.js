@@ -6,60 +6,96 @@ var { storeAbi, retrieveAbi } = require('../models/abi');
 var Web3 = require('web3');
 var web3 = new Web3(process.env.INFURA);
 
+router.get('/main', async function (req, res, next) {
+  res.render('main');
+});
+
 /* GET home page. */
-router.get('/', async function(req, res, next) {
+router.get('/', async function (req, res, next) {
   try {
-    const parts = req.hostname.split(".");
-    if(parts.length === 3){
-      const name = parts[0]+".eth";
+    const parts = req.hostname.split('.');
+    if (parts.length === 3) {
+      const name = parts[0] + '.eth';
       const address = await web3.eth.ens.getAddress(name);
-      const abi = JSON.parse((await axios.get('https://api.etherscan.io/api?module=contract&action=getabi&address='+address)).data.result);
+      const abi = JSON.parse(
+        (
+          await axios.get(
+            'https://api.etherscan.io/api?module=contract&action=getabi&address=' + address,
+          )
+        ).data.result,
+      );
       const hash = await storeAbi(abi);
 
-      return res.redirect('/'+address+"?abi="+hash);	    
+      return res.redirect('/' + address + '?abi=' + hash);
     }
-  }
-  catch(e){
-	  console.log(e);
-	  return res.render('error');
+  } catch (e) {
+    console.log(e);
+    return res.render('error');
   }
   res.render('new', { title: 'Express' });
 });
 
-router.get('/new', async function(req, res){
+router.get('/new', async function (req, res) {
   res.render('new');
-})
-
-router.post('/new', async (req, res)=> {
-  const hash = await storeAbi(JSON.parse(req.body.abi));
-  res.redirect('/'+req.body.address+"/?abi="+hash);
-})
-
-router.get('/:address', async function(req, res) {
-  const abiJson = await retrieveAbi(req.query.abi);
-  let title = req.params.address;
-  const parts = req.hostname.split(".");
-  if(parts.length === 3){
-    title += " ("+parts[0]+".eth)";
-  }
-
-  const functions = abiJson.filter(a => a.type === "function");
-  const variables = abiJson.filter(a => a.type !== "function" && a.type !== "constructor");
-  res.render('index',  { functions, variables, address: req.params.address, abiEncoded: req.query.abi, title });
 });
 
-router.get('/:address/:function', async function(req, res) {
+router.post('/new', async (req, res) => {
   try {
-  const abiJson = await retrieveAbi(req.query.abi);
-  const fun = abiJson.filter(a => a.type === "function" && a.name === req.params.function)[0];
-  res.render('function',  { fun, address: req.params.address, abiJson, abiEncoded: req.query.abi });
+    const hash = await storeAbi(JSON.parse(req.body.abi));
+    res.redirect('/' + req.body.address + '/?abi=' + hash);
+  } catch (e) {
+    console.log(e);
+    return res.render('error');
   }
-  catch(e){
+});
+
+router.get('/:address', async function (req, res) {
+  const abiJson = await retrieveAbi(req.query.abi);
+  let title = req.params.address;
+  const pinned = req.query.pinned;
+  const parts = req.hostname.split('.');
+  if (parts.length === 3) {
+    title += ' (' + parts[0] + '.eth)';
+  }
+
+  const functions = abiJson.filter((a) => a.type === 'function');
+  if (pinned) {
+    pinned
+      .split(',')
+      .reverse()
+      .forEach((func) =>
+        functions.unshift(
+          functions.splice(
+            functions.findIndex((f) => f.name === func),
+            1,
+          )[0],
+        ),
+      );
+  }
+  const variables = abiJson.filter((a) => a.type !== 'function' && a.type !== 'constructor');
+  res.render('index', {
+    functions,
+    variables,
+    address: req.params.address,
+    abiEncoded: req.query.abi,
+    title,
+  });
+});
+
+router.get('/:address/:function', async function (req, res) {
+  try {
+    const abiJson = await retrieveAbi(req.query.abi);
+    const fun = abiJson.filter((a) => a.type === 'function' && a.name === req.params.function)[0];
+    res.render('function', {
+      fun,
+      address: req.params.address,
+      abiJson,
+      abiEncoded: req.query.abi,
+    });
+  } catch (e) {
     console.log(e);
     res.render('error');
   }
 });
-
-
 
 module.exports = router;

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "nodemon ./bin/www"
   },
   "dependencies": {
     "@ensdomains/ensjs": "^2.0.1",
@@ -22,5 +22,8 @@
     "web3": "^1.5.1",
     "web3-eth": "^1.5.1",
     "web3-eth-ens": "^1.5.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.13"
   }
 }
