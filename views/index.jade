@@ -1,14 +1,28 @@
 extends layout
 
 block content
-  .container
-    p Contract Address :
-    h2= title
-    include ./walletSetup
-    br
-    p Available Functions : 
-    .tileContainer
-      each f in functions
-        a.tile( href="/#{address}/#{f.name}?abi=#{abiEncoded}&network=#{network}") 
-          span= f.name.replace( /([A-Z])/g, " $1" )
 
+  nav.navbar.navbar-dark.p-4(style="background-color:transparent;")
+      .container-fluid.position-relative
+          button.btn.btn-light.btn-lg.position-absolute.top-50.end-0 Connect Wallet
+  include ./walletSetup
+  .center-container.d-flex.justify-content-center
+    .container.text-center
+      .row.gy-5
+        .col-12
+          span.fs-3 Contract Address : 
+          span.address.fs-4= title
+        .col-12
+          p.fs-2 Available Functions : 
+      .container
+        .row.gx-4.gy-3
+          each f in functions
+            .col-3
+              .card.text-center.cardd.rounded-5
+                .card-body.position-relative.py-5
+                  button.btn.btn-link.btn-lg.pin.position-absolute.top-0.end-0(onclick="pinIt(event,'#{f.name}')" id="#{f.name}") 
+                    i.bi.bi-pin-angle
+                  a.links( href="/#{address}/#{f.name}?abi=#{abiEncoded}&network=#{network}") 
+                    h5.card-title.m-4= f.name.replace( /([A-Z])/g, " $1" )
+      .mb-3.mt-5.d-grid.gap-2.col-4.mx-auto
+        a.btn.btn-outline-light.btn-lg(href="/new") Explore a new contract 

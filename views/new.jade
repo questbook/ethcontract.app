@@ -1,19 +1,20 @@
 extends layout
 
 block content
-  .container
-    h1 Explore a contract 
-    p Auto generated UI for contracts
-    form(action="/new", method="post") 
-        .card
-            h3 Contract Address
-            input(name="address")
-        .card
-            h3 Contract Network 
-            input(name="network" placeholder="Network Name")
-        .card
-            h3 Contract ABI 
-            textarea(name="abi")
-        br
-        button Explore Contract
-        
+    nav.navbar.navbar-dark.p-4(style="background-color:transparent;")
+        .container-fluid.position-relative
+            button.btn.btn-light.btn-lg.position-absolute.top-50.end-0 Connect Wallet
+    .center-container.d-flex.justify-content-center
+        .container.text-center.form-container
+            form(action="/new", method="post") 
+                .mb-5
+                    label.form-label.h4.mb-4(for='contractAddress') Contract Address
+                    input#contractAddress.form-control.form-control-lg(name="address" type="text")
+                .mb-5
+                    label.form-label.h4.mb-4(for='contractNetwork') Contract Network
+                    input#contractNetwork.form-control.form-control-lg(name="network" type="text")
+                .mb-5
+                    label.form-label.h4.mb-4(for='contractABI') Contract ABI
+                    textarea#contractABI.form-control.form-control-lg(name="abi" type="text" rows="4")
+                .mb-3.mt-5.d-grid.gap-2.col-4.mx-auto
+                    button.btn.btn-light.btn-lg(type="submit") Explore Contract

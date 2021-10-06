@@ -44,25 +44,36 @@ block content
     }
 
 
-  .container
-    h1= fun.name.replace( /([A-Z])/g, " $1" )
-    a(href="/"+address+"?abi="+abiEncoded+"&network="+network) #[i(data="close")] Back to all functions
-    include ./walletSetup
-    .inputContainer
-      each inp in fun.inputs 
-        .card
-          h3= inp.name.replace( /([A-Z])/g, " $1" )
-          input(placeholder=inp.name.replace( /([A-Z])/g, " $1" )+"("+fun.type+")" id=inp.name)
+  nav.navbar.navbar-dark.p-4(style="background-color:transparent;")
+      .container-fluid.position-relative
+          button.btn.btn-light.btn-lg.position-absolute.top-50.end-0 Connect Wallet
+  include ./walletSetup
+  .center-container.d-flex.justify-content-center
+    .container.form-container
+      .row.gy-5.position-relative
+        div.position-absolute.top-0.end-0.w-auto
+          a.links(href="/"+address+"?abi="+abiEncoded+"&network="+network) #[i(data="close")]
+            i.bi.bi-arrow-left.me-2
+            | Back to all functions
+        .col-12
+          span.fs-3 Function : 
+          span.fs-4= fun.name.replace( /([A-Z])/g, " $1" )
+        .col-12
+          each inp in fun.inputs 
+            .mb-3
+                label.form-label.fs-5.mb-4= inp.name.replace( /([A-Z])/g, " $1" )
+                input.form-control.form-control-lg.mb-5(placeholder=inp.name.replace( /([A-Z])/g, " $1" )+"("+fun.type+")" id=inp.name)
 
-      if fun.stateMutability === "payable"
-        .card 
-          h3 This function expects a payment
-          input(placeholder="Amount to send in Ethers" id="value")
-      .card
-        h3 Execute Transaction
-        button( onclick="wrappedRun()") Run
-        br
-        br
-        pre(id="response").
-          Fill in the parameters and tap run
-
+          if fun.stateMutability === "payable"
+            .mb-3
+                label.form-label.fs-5.mb-4 This function expects a payment
+                input.form-control.form-control-lg.mb-5(placeholder="Amount to send in Ethers" id="value")
+          .mb-3
+            span.fs-5.mb-4 Execute Transaction 
+            span ( Fill in the parameters and tap run )
+          .mb-5.d-grid.gap-2.col-3
+            button.btn.btn-light.btn-lg( onclick="wrappedRun()") Run
+          .mb-3
+            .alert.alert-light.invisible.bg-transparent.text-white.overflow-auto(role='alert' id="response")
+          .mb-3.mt-5.d-grid.gap-2.col-4.mx-auto
+            a.btn.btn-outline-light.btn-lg(href="/new") Explore a new contract 
