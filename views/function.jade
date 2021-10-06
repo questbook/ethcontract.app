@@ -30,6 +30,7 @@ block content
         }
         else {
           //payable
+          $("#response").removeClass('invisible');
           $("#response").html("Transaction Pending...");
           const response = await contract["#{fun.name}"](...args2, { value: ethers.utils.parseEther($("#value").val()) });
           const txReceipt = await response.wait();
@@ -39,6 +40,7 @@ block content
       }
       catch(e){
         console.log(e, e.toString());
+        $("#response").removeClass('invisible');
         $("#response").html(e.toString());
       }
     }

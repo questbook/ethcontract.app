@@ -22,7 +22,7 @@ router.get('/', async function (req, res, next) {
     console.log(e);
     return res.render('error');
   }
-  res.render('new', { title: 'Express' });
+  res.render('main');
 });
 
 router.get('/new', async function (req, res) {
@@ -56,12 +56,26 @@ router.get('/:address', async function (req, res) {
   const abiJson = await retrieveAbi(req.query.abi);
   let network = req.query.network;
   let title = req.params.address;
+  const pinned = req.query.pinned;
   const parts = req.hostname.split('.');
   if (parts.length === 3) {
     title += ' (' + parts[0] + '.eth)';
   }
 
   const functions = abiJson.filter((a) => a.type === 'function');
+  if (pinned) {
+    pinned
+      .split(',')
+      .reverse()
+      .forEach((func) =>
+        functions.unshift(
+          functions.splice(
+            functions.findIndex((f) => f.name === func),
+            1,
+          )[0],
+        ),
+      );
+  }
   const variables = abiJson.filter((a) => a.type !== 'function' && a.type !== 'constructor');
   res.render('index', {
     functions,

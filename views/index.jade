@@ -1,6 +1,55 @@
 extends layout
 
 block content
+  script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+  script.
+    function pinIt(event, name) {
+      const urlParams = new URLSearchParams(window.location.search);
+
+      let pinned = getPinnedFunctions();
+      console.log(pinned)
+      if(pinned && !isPinned(name)) {
+        pinned = `${pinned},${name}`;
+      } else if(pinned) {
+        pinned = pinned.split(',').filter(x=> x !== name).join(',');
+      } else {
+        pinned = name;
+      }
+      urlParams.set('pinned', pinned);
+
+      window.location.search = urlParams;
+    }
+
+    function isPinned(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+
+      let pinned = urlParams.get('pinned');
+      return pinned && pinned.split(',').includes(name);
+
+    }
+
+    function getPinnedFunctions() {
+      const urlParams = new URLSearchParams(window.location.search);
+
+      return urlParams.get('pinned');
+
+    }
+
+    function setPinnedFunctionOnLoad() {
+      let pinned = getPinnedFunctions();
+      if(pinned) {
+        const funcList = pinned.split(',');
+        funcList.forEach(func=>{
+          $(`#${func}`).children().addClass('bi-pin-angle-fill');
+          $(`#${func}`).children().removeClass('bi-pin-angle');
+        });
+      }
+    }
+
+    $(function(){
+      setPinnedFunctionOnLoad();
+    });
+
 
   nav.navbar.navbar-dark.p-4(style="background-color:transparent;")
       .container-fluid.position-relative
