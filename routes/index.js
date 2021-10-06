@@ -6,10 +6,6 @@ var Web3 = require('web3');
 var { getAbiFromEtherscan } = require('../lib');
 var web3 = new Web3(process.env.INFURA);
 
-router.get('/main', async function (req, res, next) {
-  res.render('main');
-});
-
 /* GET home page. */
 router.get('/', async function (req, res, next) {
   try {
@@ -26,7 +22,7 @@ router.get('/', async function (req, res, next) {
     console.log(e);
     return res.render('error');
   }
-  res.render('new', { title: 'Express' });
+  res.render('main');
 });
 
 router.get('/new', async function (req, res) {
