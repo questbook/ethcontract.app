@@ -12,6 +12,10 @@ body {
   color: rgba(255, 255, 255, 0.849);
 }
 
+i.bi-circle-fill {
+  color: #198754 !important;
+}
+
 .card-pin {
   position: absolute;
   left: 84%;
@@ -35,20 +39,36 @@ body {
   width: 100%;
 }
 
+.full-cover-main {
+  background-image: url('/images/bg-01-02.png');
+  height: 100vh;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.full-cover-other {
+  background-image: url('/images/bg-01-01.png');
+  height: 100vh;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 .center-container {
   position: relative;
   min-height: 30rem;
   height: 60vh;
   width: 100%;
-  margin-top: 6em;
 }
 
 .form-container {
   padding: 0 11em;
+  margin-top: 6em;
 }
 
 .cardd {
-  background-color: #01205c;
+  background-color: transparent;
   border-color: white;
 }
 

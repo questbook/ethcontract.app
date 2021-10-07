@@ -1,13 +1,11 @@
 extends layout
 
 block content
-  script(src="https://code.jquery.com/jquery-3.6.0.min.js")
   script.
     function pinIt(event, name) {
       const urlParams = new URLSearchParams(window.location.search);
 
       let pinned = getPinnedFunctions();
-      console.log(pinned)
       if(pinned && !isPinned(name)) {
         pinned = `${pinned},${name}`;
       } else if(pinned) {
@@ -51,27 +49,25 @@ block content
     });
 
 
-  nav.navbar.navbar-dark.p-4(style="background-color:transparent;")
-      .container-fluid.position-relative
-          button.btn.btn-light.btn-lg.position-absolute.top-50.end-0 Connect Wallet
-  include ./walletSetup
-  .center-container.d-flex.justify-content-center
-    .container.text-center
-      .row.gy-5
-        .col-12
-          span.fs-3 Contract Address : 
-          span.address.fs-4= title
-        .col-12
-          p.fs-2 Available Functions : 
-      .container
-        .row.gx-4.gy-3
-          each f in functions
-            .col-3
-              .card.text-center.cardd.rounded-5
-                .card-body.position-relative.py-5
-                  button.btn.btn-link.btn-lg.pin.position-absolute.top-0.end-0(onclick="pinIt(event,'#{f.name}')" id="#{f.name}") 
-                    i.bi.bi-pin-angle
-                  a.links( href="/#{address}/#{f.name}?abi=#{abiEncoded}&network=#{network}") 
-                    h5.card-title.m-4= f.name.replace( /([A-Z])/g, " $1" )
-      .mb-3.mt-5.d-grid.gap-2.col-4.mx-auto
-        a.btn.btn-outline-light.btn-lg(href="/new") Explore a new contract 
+  .div.full-cover-other
+    include ./walletSetup
+    .center-container.d-flex.justify-content-center
+      .container.text-center
+        .row.gy-5.mt-5
+          .col-12
+            span.fs-3 Contract Address : 
+            span.address.fs-4= title
+          .col-12
+            p.fs-2 Available Functions : 
+        .container
+          .row.gx-4.gy-3
+            each f in functions
+              .col-3
+                .card.text-center.cardd.rounded-5
+                  .card-body.position-relative.py-5
+                    button.btn.btn-link.btn-lg.pin.position-absolute.top-0.end-0(onclick="pinIt(event,'#{f.name}')" id="#{f.name}") 
+                      i.bi.bi-pin-angle
+                    a.links( href="/#{address}/#{f.name}?abi=#{abiEncoded}&network=#{network}") 
+                      h5.card-title.m-4= f.name.replace( /([A-Z])/g, " $1" )
+        .mb-3.mt-5.d-grid.gap-2.col-4.mx-auto
+          a.btn.btn-outline-light.btn-lg(href="/new") Explore a new contract 

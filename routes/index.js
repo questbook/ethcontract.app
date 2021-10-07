@@ -14,7 +14,7 @@ router.get('/', async function (req, res, next) {
       const name = parts[0] + '.eth';
       const address = await web3.eth.ens.getAddress(name);
       const abi = await getAbiFromEtherscan(address);
-      const hash = await storeAbi(abi);
+      const hash = await storeAbi(abi, 'mainnet');
 
       return res.redirect('/' + address + '?abi=' + hash);
     }
@@ -32,9 +32,14 @@ router.get('/new', async function (req, res) {
 router.post('/new', async (req, res) => {
   let abi = req.body.abi;
   let address = req.body.address;
+  let network = req.body.network;
 
   if (!address) {
     return res.render('error', { error: 'Address is required' });
+  }
+
+  if (!network) {
+    return res.render('error', { error: 'Network is required' });
   }
 
   if (!abi) {
@@ -47,15 +52,22 @@ router.post('/new', async (req, res) => {
     });
   }
 
-  const hash = await storeAbi(abi);
-  let network = req.body.network;
+  const hash = await storeAbi(JSON.parse(abi), network);
   res.redirect(`/${req.body.address}/?abi=${hash}&network=${network}`);
 });
 
 router.get('/:address', async function (req, res) {
-  const abiJson = await retrieveAbi(req.query.abi);
+  let address = req.params.address;
+  let abi = req.query.abi;
+
+  const abiJson = await retrieveAbi(abi);
+
+  if (!abiJson) {
+    return res.render('error');
+  }
+
   let network = req.query.network;
-  let title = req.params.address;
+  let title = address;
   const pinned = req.query.pinned;
   const parts = req.hostname.split('.');
   if (parts.length === 3) {
@@ -90,8 +102,12 @@ router.get('/:address', async function (req, res) {
 
 router.get('/:address/:function', async function (req, res) {
   try {
-    console.log(req.query);
     const abiJson = await retrieveAbi(req.query.abi);
+
+    if (!abiJson) {
+      return res.render('error');
+    }
+
     let network = req.query.network;
     const fun = abiJson.filter((a) => a.type === 'function' && a.name === req.params.function)[0];
     res.render('function', {
