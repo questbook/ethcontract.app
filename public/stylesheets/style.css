@@ -3,6 +3,16 @@ body {
   color: white;
 }
 
+.nav-link {
+  color: white;
+}
+
+.nav-link :hover {
+  color: white;
+  color: rgba(255, 255, 255, 0.849);
+
+}
+
 .links {
   text-decoration: none !important;
   color: white !important;

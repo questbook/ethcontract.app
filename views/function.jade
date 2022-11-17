@@ -60,7 +60,7 @@ block content
             each inp in fun.inputs 
               .mb-3
                   label.form-label.fs-5.mb-4= inp.name.replace( /([A-Z])/g, " $1" )
-                  input.form-control.form-control-lg.mb-5(placeholder=inp.name.replace( /([A-Z])/g, " $1" )+"("+fun.type+")" id=inp.name)
+                  input.form-control.form-control-lg.mb-5(placeholder=inp.name.replace( /([A-Z])/g, " $1" )+": "+inp.type+"" id=inp.name)
 
             if fun.stateMutability === "payable"
               .mb-3
@@ -73,5 +73,3 @@ block content
               button.btn.btn-light.btn-lg( onclick="wrappedRun()") Run
             .mb-3
               .alert.alert-light.invisible.bg-transparent.text-white.overflow-auto(role='alert' id="response")
-            .mb-3.mt-5.d-grid.gap-2.col-4.mx-auto
-              a.btn.btn-outline-light.btn-lg(href="/new") Explore a new contract 

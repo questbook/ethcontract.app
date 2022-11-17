@@ -4,6 +4,7 @@ var { storeAbi, retrieveAbi } = require('../models/abi');
 
 var Web3 = require('web3');
 var { getAbiFromEtherscan } = require('../lib');
+const { request } = require('https');
 var web3 = new Web3(process.env.INFURA);
 
 /* GET home page. */
@@ -97,6 +98,7 @@ router.get('/:address', async function (req, res) {
     abiJson,
     title,
     network,
+    url: req.protocol + '://' + req.get('host') + req.originalUrl,
   });
 });
 
@@ -116,6 +118,7 @@ router.get('/:address/:function', async function (req, res) {
       abiJson,
       abiEncoded: req.query.abi,
       network,
+      url: req.protocol + '://' + req.get('host') + req.originalUrl,
     });
   } catch (e) {
     console.log(e);

@@ -12,4 +12,12 @@ html
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     link(rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic")
   body
+    nav(class="nav")
+      a(href='/' class="nav-link" ) Home 
+      a(href='/new' class="nav-link") New
+      a(href='https://github.com/questbook/ethcontract.app' class="nav-link") Github
+
     block content
+    button.btn.btn-light.btn-lg.ms-2(style="position: fixed; bottom: 24px; right: 24px; background-color: yellow" onclick="navigator.share({ url: window.location.href, text: window.location.href })") 
+        i.bi.bi-share(id="shareIcon")
+        span &nbsp; Share this UI

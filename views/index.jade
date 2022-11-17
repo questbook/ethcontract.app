@@ -57,8 +57,9 @@ block content
           .col-12
             span.fs-3 Contract Address : 
             span.address.fs-4= title
-          .col-12
-            p.fs-2 Available Functions : 
+        button.btn.btn-light.btn-lg.ms-2(style="margin: 24px" onclick="navigator.share({ url: window.location.href, text: window.location.href })") 
+          i.bi.bi-share(id="shareIcon")
+          span &nbsp; Share this UI
         .container
           .row.gx-4.gy-3
             each f in functions
@@ -69,5 +70,3 @@ block content
                       i.bi.bi-pin-angle
                     a.links( href="/#{address}/#{f.name}?abi=#{abiEncoded}&network=#{network}") 
                       h5.card-title.m-4= f.name.replace( /([A-Z])/g, " $1" )
-        .mb-3.mt-5.d-grid.gap-2.col-4.mx-auto
-          a.btn.btn-outline-light.btn-lg(href="/new") Explore a new contract 

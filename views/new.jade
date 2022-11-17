@@ -7,12 +7,17 @@ block content
                 form(action="/new", method="post") 
                     .mb-5
                         label.form-label.h4.mb-4(for='contractAddress') Contract Address
-                        input#contractAddress.form-control.form-control-lg(name="address" type="text")
+                        input#contractAddress.form-control.form-control-lg(name="address" type="text" placeholder=" ")
                     .mb-5
                         label.form-label.h4.mb-4(for='contractNetwork') Contract Network
-                        input#contractNetwork.form-control.form-control-lg(name="network" type="text")
+                        select#contractNetwork.form-control.form-control-lg(name="network" type="text")
+                            option(value="1") Ethereum Mainnet
+                            option(value="10") Optimism Mainnet 
+                            option(value="137") Polygon Mainnet
+                            option(value="42161") Arbitrum Mainnet
+                            option(value="5") Goerli Testnet
                     .mb-5
                         label.form-label.h4.mb-4(for='contractABI') Contract ABI
                         textarea#contractABI.form-control.form-control-lg(name="abi" type="text" rows="4")
                     .mb-3.mt-5.d-grid.gap-2.col-4.mx-auto
-                        button.btn.btn-light.btn-lg(type="submit") Explore Contract
+                        button.btn.btn-light.btn-lg(type="submit") Create UI
