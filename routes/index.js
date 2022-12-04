@@ -9,6 +9,7 @@ var web3 = new Web3(process.env.INFURA);
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
+  console.log("someone opened me")
   try {
     const parts = req.hostname.split('.');
     if (parts.length === 3) {

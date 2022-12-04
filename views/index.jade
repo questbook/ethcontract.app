@@ -38,8 +38,8 @@ block content
       if(pinned) {
         const funcList = pinned.split(',');
         funcList.forEach(func=>{
-          $(`#${func}`).children().addClass('bi-pin-angle-fill');
-          $(`#${func}`).children().removeClass('bi-pin-angle');
+          $(`#${func}`).children().addClass('text-red-800');
+          //- $(`#${func}`).children().removeClass('bi-pin-angle');
         });
       }
     }
@@ -49,24 +49,17 @@ block content
     });
 
 
-  .div.full-cover-other
-    include ./walletSetup
-    .center-container.d-flex.justify-content-center
-      .container.text-center
-        .row.gy-5.mt-5
-          .col-12
-            span.fs-3 Contract Address : 
-            span.address.fs-4= title
-        button.btn.btn-light.btn-lg.ms-2(style="margin: 24px" onclick="navigator.share({ url: window.location.href, text: window.location.href })") 
-          i.bi.bi-share(id="shareIcon")
-          span &nbsp; Share this UI
-        .container
-          .row.gx-4.gy-3
+  include ./walletSetup
+  .div
+      .container.text-center.mx-auto
+            span.fs-3.font-bold.text-lg Contract Address 
+            br
+            span(class="sm:hidden")= title.slice(0,6)+"..."+title.slice(-4)
+            span(class="hidden sm:inline-block")= title
+        .container.mx-auto.flex.max-w-screen.flex-wrap.justify-center.my-4(class="sm:justify-start")
             each f in functions
-              .col-3
-                .card.text-center.cardd.rounded-5
-                  .card-body.position-relative.py-5
-                    button.btn.btn-link.btn-lg.pin.position-absolute.top-0.end-0(onclick="pinIt(event,'#{f.name}')" id="#{f.name}") 
-                      i.bi.bi-pin-angle
-                    a.links( href="/#{address}/#{f.name}?abi=#{abiEncoded}&network=#{network}") 
-                      h5.card-title.m-4= f.name.replace( /([A-Z])/g, " $1" )
+              .bg-gray-200.text-black.rounded.p-4.mx-6.my-3.flex.justify-between.min-w-fit.flex-1(class="sm:mx-3")
+                button.mx-2.btn.btn-link.btn-lg.pin.position-absolute.top-0.end-0(onclick="pinIt(event,'#{f.name}')" id="#{f.name}") 
+                  i(data-feather="crosshair")
+                a( href="/#{address}/#{f.name}?abi=#{abiEncoded}&network=#{network}") 
+                  h5.text-black= f.name.replace( /([A-Z])/g, " $1" )

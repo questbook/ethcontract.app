@@ -13,7 +13,7 @@ var mongoose = require('mongoose');
 var mongoDB = process.env.MONGO_CONNECTION || 'mongodb://127.0.0.1/ethcontractapp';
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true }, (err) =>
   console.log(err),
-);
+)
 var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

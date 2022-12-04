@@ -21,7 +21,7 @@ script.
             console.log(error);
 
         }
-        
+
     };
 
 
@@ -76,7 +76,7 @@ script.
         $("#network").hide();
         $("#switch-btn").hide();
         if(window.ethereum){
-            
+
             $('#installMM').hide();
             const response = await window.ethereum.request({method: 'eth_accounts'})
             console.log(response);

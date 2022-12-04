@@ -44,32 +44,28 @@ block content
     }
 
 
-  .div.full-cover-other
+  .div
     include ./walletSetup
-    .center-container.d-flex.justify-content-center
-      .container.form-container
-        .row.gy-5.position-relative
-          div.position-absolute.top-0.end-0.w-auto
-            a.links(href="/"+address+"?abi="+abiEncoded+"&network="+network) #[i(data="close")]
-              i.bi.bi-arrow-left.me-2
-              | Back to all functions
-          .col-12
-            span.fs-3 Function : 
-            span.fs-4= fun.name.replace( /([A-Z])/g, " $1" )
-          .col-12
-            each inp in fun.inputs 
-              .mb-3
-                  label.form-label.fs-5.mb-4= inp.name.replace( /([A-Z])/g, " $1" )
-                  input.form-control.form-control-lg.mb-5(placeholder=inp.name.replace( /([A-Z])/g, " $1" )+": "+inp.type+"" id=inp.name)
+    .container.relative.flex.flex-col.justify-center.items-center.gap-6.my-4.mx-auto.px-2
+      .p
+        span.fs-3 Function : 
+        span.fs-4= fun.name.replace( /([A-Z])/g, " $1" )
+      span.text-gray-400.text-sm.text-center
+        | Fill in the parameters (if any) and tap run to execute the transaction.
+      div
+        each inp in fun.inputs 
+          .flex.flex-col.my-6
+            label.form-label.fs-5.mb-4= inp.name.replace( /([A-Z])/g, " $1" )
+            input.px-2.py-2.rounded-md.text-black(placeholder=inp.name.replace( /([A-Z])/g, " $1" )+": "+inp.type+"" id=inp.name)
 
-            if fun.stateMutability === "payable"
-              .mb-3
-                  label.form-label.fs-5.mb-4 This function expects a payment
-                  input.form-control.form-control-lg.mb-5(placeholder="Amount to send in Ethers" id="value")
-            .mb-3
-              span.fs-5.mb-4 Execute Transaction 
-              span ( Fill in the parameters and tap run )
-            .mb-5.d-grid.gap-2.col-3
-              button.btn.btn-light.btn-lg( onclick="wrappedRun()") Run
-            .mb-3
-              .alert.alert-light.invisible.bg-transparent.text-white.overflow-auto(role='alert' id="response")
+        if fun.stateMutability === "payable"
+          .flex.flex-col
+            label.form-label.fs-5.mb-4 This function expects a payment
+            input.px-2.py-2.rounded-md.text-black(placeholder="Amount to send in Ethers" id="value")
+      button.inline-block.px-5.py-2.bg-white.rounded-lg.text-black( onclick="wrappedRun()") Run
+      div.w-auto.text-blue-500.mt-5
+        a.text-right.flex.gap-2(href="/"+address+"?abi="+abiEncoded+"&network="+network) #[i(data="close")]
+          i(data-feather="arrow-left")
+          | Back to all functions
+      .mb-3
+        .alert.alert-light.invisible.bg-transparent.text-white.overflow-auto(role='alert' id="response")

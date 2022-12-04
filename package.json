@@ -8,12 +8,16 @@
   },
   "dependencies": {
     "@ensdomains/ensjs": "^2.0.1",
+    "@wagmi/core": "^0.7.8",
+    "@web3modal/ethereum": "^2.0.0-beta.7",
+    "@web3modal/html": "^2.0.0-beta.7",
     "atob": "^2.1.2",
     "axios": "^0.21.1",
     "btoa": "^1.2.1",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^10.0.0",
+    "ethers": "^5.7.2",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "https": "^1.0.0",
@@ -25,6 +29,6 @@
     "web3-eth-ens": "^1.5.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.13"
+    "nodemon": "^2.0.20"
   }
 }

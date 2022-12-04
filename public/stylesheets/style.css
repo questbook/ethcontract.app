@@ -1,5 +1,5 @@
 body {
-  background-color: #01205c;
+  background-color: #101f3d;
   color: white;
 }
 
@@ -26,7 +26,7 @@ i.bi-circle-fill {
   color: #198754 !important;
 }
 
-.card-pin {
+/* .card-pin {
   position: absolute;
   left: 84%;
   bottom: 62%;
@@ -86,4 +86,4 @@ i.bi-circle-fill {
   border: 1px solid #f9fafb;
   padding: 0.5em;
   border-radius: 3px;
-}
+} */
