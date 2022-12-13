@@ -9,10 +9,13 @@
   "dependencies": {
     "@ensdomains/ensjs": "^2.0.1",
     "@wagmi/core": "^0.7.8",
+    "@walletconnect/sign-client": "^2.1.4",
     "@web3modal/ethereum": "^2.0.0-beta.7",
     "@web3modal/html": "^2.0.0-beta.7",
+    "@web3modal/standalone": "^2.0.0-beta.9",
     "atob": "^2.1.2",
     "axios": "^0.21.1",
+    "browser-resolve": "^2.0.0",
     "btoa": "^1.2.1",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
@@ -29,6 +32,7 @@
     "web3-eth-ens": "^1.5.1"
   },
   "devDependencies": {
+    "esmify": "^2.1.1",
     "nodemon": "^2.0.20"
   }
 }
