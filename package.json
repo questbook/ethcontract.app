@@ -27,12 +27,15 @@
     "jade": "~1.11.0",
     "mongoose": "^5.13.5",
     "morgan": "~1.9.1",
+    "stream-browserify": "^3.0.0",
     "web3": "^1.5.1",
     "web3-eth": "^1.5.1",
     "web3-eth-ens": "^1.5.1"
   },
   "devDependencies": {
     "esmify": "^2.1.1",
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
   }
 }

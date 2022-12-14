@@ -1,46 +1,30 @@
-script(src="/javascripts/w3m-bundle.js") 
+div.flex.justify-center.py-4
+    w3m-core-button
 
+script(src="/javascripts/w3m.js") 
 script.
-    console.log(window.Web3Modal)
-//- script(src="https://unpkg.com/@web3modal/html@2.0.0-beta.8/dist/index.js")
-//- script.
-//- script(type="module").
-    import { chain, configureChains, createClient } = require("@wagmi/core");
-    import { Web3Modal } = require("@web3modal/html");
-    import {  EthereumClient, modalConnectors, walletConnectProvider } = require("@web3modal/ethereum");
+    console.log(window.w3m)
+    console.log(window.wagmi)
     
-    $(async function() {    
-        const Web3Modal = window.Web3Modal.default;
-        const providerOptions = {
-        /* See Provider Options Section */
-        };
-
-        const web3Modal = new Web3Modal({
-            network: "mainnet", // optional
-            cacheProvider: true, // optional
-            providerOptions // required
-        });
-
-        const provider = await web3Modal.connect();
-    });
-
-    //- const chains = [chain.mainnet];
+    const chains = [window.wagmi.chains.arbitrum, window.wagmi.chains.mainnet, window.wagmi.chains.polygon];
 
     // Wagmi Core Client
-    //- const { provider } = configureChains(chains, [
-    //-     walletConnectProvider({ projectId: "30c64d8ec46ca4e39864b78271437d20" }),
-    //- ]);
+    const { provider } = window.wagmi.configureChains(chains, [
+        window.w3m.walletConnectProvider({ projectId: "30c64d8ec46ca4e39864b78271437d20" }),
+    ]);
 
-    //- const wagmiClient = createClient({
-    //-     autoConnect: true,
-    //-     connectors: modalConnectors({ appName: "web3Modal", chains }),
-    //-     provider,
+    console.log(provider)
+
+    const wagmiClient = window.wagmi.createClient({
+        autoConnect: true,
+        connectors: window.w3m.modalConnectors({ appName: "web3Modal", chains }),
+        provider,
     });
 
-    // Web3Modal and Ethereum Client
-    //- //- const ethereumClient = new EthereumClient(wagmiClient, chains);
-    //- const web3modal = new Web3Modal(
-    //-     { projectId: "30c64d8ec46ca4e39864b78271437d20" },
-    //-     ethereumClient
-    //- );
+    //- // Web3Modal and Ethereum Client
+    const ethereumClient = new window.w3m.EthereumClient(wagmiClient, chains);
+    const web3modal = new window.w3m.Web3Modal(
+        { projectId: "30c64d8ec46ca4e39864b78271437d20" },
+        ethereumClient
+    );
 
