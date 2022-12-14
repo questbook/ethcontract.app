@@ -1,19 +1,11 @@
-div.flex.justify-center.py-4
-    w3m-core-button
-
-script(src="/javascripts/w3m.js") 
+script(src="/js/w3m.js") 
 script.
-    console.log(window.w3m)
-    console.log(window.wagmi)
-    
-    const chains = [window.wagmi.chains.arbitrum, window.wagmi.chains.mainnet, window.wagmi.chains.polygon];
+    const chains = [window.wagmi.chains.mainnet, window.wagmi.chains.polygon, window.wagmi.chains.arbitrum];
 
     // Wagmi Core Client
     const { provider } = window.wagmi.configureChains(chains, [
         window.w3m.walletConnectProvider({ projectId: "30c64d8ec46ca4e39864b78271437d20" }),
     ]);
-
-    console.log(provider)
 
     const wagmiClient = window.wagmi.createClient({
         autoConnect: true,
@@ -21,10 +13,23 @@ script.
         provider,
     });
 
-    //- // Web3Modal and Ethereum Client
+    // Web3Modal and Ethereum Client
     const ethereumClient = new window.w3m.EthereumClient(wagmiClient, chains);
+
     const web3modal = new window.w3m.Web3Modal(
         { projectId: "30c64d8ec46ca4e39864b78271437d20" },
         ethereumClient
     );
+
+    var network = web3modal.getSelectedChain();
+    document.querySelector("#network-name").innerText = network
+
+    web3modal.subscribeSelectedChain((newChain) => {
+        network = newChain
+        document.querySelector("#network-name").innerText = network
+    }); 
+
+div.flex.justify-center.py-4
+    w3m-core-button
+    span#network-name 
 
