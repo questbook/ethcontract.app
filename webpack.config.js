@@ -1,10 +1,10 @@
 const path = require("path");
 
 module.exports = {
-	entry: "./wallet copy.js",
+	entry: "./wallet.js",
 	output: {
-		path: path.resolve(__dirname, "public/javascripts/"),
-		filename: "w3m-webpack.js",
+		path: path.resolve(__dirname, "public/js/"),
+		filename: "w3m.js",
 	},
 	mode: "production",
 	resolve: {
