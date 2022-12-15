@@ -4,43 +4,110 @@ block content
   script.
     const args1 = !{JSON.stringify(fun.inputs)}
 
-    async function wrappedRun() {
+    async function wrappedRun(){
       try {
-        if(typeof window.ethereum === "undefined"){
-          alert("Please install Metamask");
+        if (wagmi.getAccount().address) {
+          run()
+        } else {
+          alert("Please connect your wallet!")
         }
-        window.ethereum.enable();
-        await run();
       } catch(e){
+        console.log(e)
         $("#response").val(e.toString());
       }
     }
 
-    async function run() {
-      try{
-        const args2 = args1.map(a => $("#"+a.name).val());
-        if("#{fun.stateMutability}" === "pure" || "#{fun.stateMutability}" === "view" || "#{fun.stateMutability}" !== "payable"){
-          $("#response").removeClass('invisible');
-          $("#response").html("Transaction Pending...");
-          const response = await contract["#{fun.name}"](...args2);
-          console.log(response);
-          $("#response").html(JSON.stringify(response));
+    async function run(){
+      const network = #{network}; // from the server
+      const { chain: _network } = await wagmi.getNetwork() // current network
+
+      console.log(network, _network.id)
+      console.log(network !== _network.id)
+
+      if (network !== _network.id) {
+        alert("You are on the wrong network. Change network & try again!")
+        try {
+          await wagmi.switchNetwork({
+            chainId: network,
+          }) 
+        } catch(e) {
+          console.log(e)
+          alert("Failed to switch network. Please make sure you're on the right one!")
         }
-        else {
-          //payable
-          $("#response").removeClass('invisible');
-          $("#response").html("Transaction Pending...");
-          const response = await contract["#{fun.name}"](...args2, { value: ethers.utils.parseEther($("#value").val()) });
-          const txReceipt = await response.wait();
-          console.log(txReceipt);
-          $("#response").html("Transaction successful \n\n"+JSON.stringify(txReceipt));
+      } else {
+        try {
+          if("#{fun.stateMutability}" === "pure" || "#{fun.stateMutability}" === "view" || "#{fun.stateMutability}" !== "payable"){
+            $("#response").removeClass('hidden');
+            $("#response").html("Transaction Pending...");
+
+            const data = await wagmi.readContract({
+              address: "#{address}",
+              abi: !{JSON.stringify(abiJson)},
+              functionName: "#{fun.name}"
+            })  
+
+            //- console.log(data)
+            $("#response").html(JSON.stringify(data));
+          }
+          else {
+            //payable
+            $("#response").removeClass('hidden');
+            $("#response").html("Transaction Pending...");
+
+            const args2 = args1.map(a => $("#"+a.name).val());
+
+            //  ----
+            //  wagmi fails when passing string for uint argument etc
+            //  ----
+            //- const config = await wagmi.prepareWriteContract({
+            //-   address: "#{address}",
+            //-   abi: !{JSON.stringify(abiJson)},
+            //-   functionName: "#{fun.name}",
+            //-   args : [0],
+            //-   overrides: {
+            //-     value: ethers.utils.parseEther($("#value").val())
+            //-   },
+            //- })  
+            //- const txn = await wagmi.writeContract(config)
+            //- console.log(txn)
+            //- const data = await txn.wait()
+            //- console.log(data)
+
+            const signer = await wagmi.fetchSigner()
+
+            const contract = wagmi.getContract({
+                address: "#{address}",
+                abi: !{JSON.stringify(abiJson)},
+                signerOrProvider: signer
+            })
+
+            const response = await contract["#{fun.name}"](...args2, { value: ethers.utils.parseEther($("#value").val()) });
+
+            const txReceipt = await response.wait();
+            console.log("Transaction Receipt", txReceipt);
+            $("#response").addClass("bg-green-200")
+            $("#response").html(JSON.stringify(txReceipt.transactionHash));
+            alert("Txn successful!")
+            $("#response").html("Transaction Hash: \n\n"+JSON.stringify(txReceipt.transactionHash));
+          }
         }
-      }
-      catch(e){
-        console.log(e, e.toString());
-        $("#response").removeClass('invisible');
-        $("#response").html(e.toString());
-      }
+          catch(e){
+            console.log(e, e.toString());
+            $("#response").removeClass('hidden');
+            $("#response").html(e.toString());
+            $("#response").removeClass('bg-white')
+            $("#response").addClass('bg-red-100')
+          }
+      } 
+    }
+
+    const copyToClipboard = () => {
+      var $temp = $("<input>");
+      $("body").append($temp);
+      $temp.val($("#response").text()).select();
+      document.execCommand("copy", false, $temp.val());
+      $temp.remove();
+      alert("copied to clipboard")
     }
 
 
@@ -49,23 +116,25 @@ block content
     .container.relative.flex.flex-col.justify-center.items-center.gap-6.my-4.mx-auto.px-2
       .p
         span.fs-3 Function : 
-        span.fs-4= fun.name.replace( /([A-Z])/g, " $1" )
+        span.fs-4= fun.name.replace( /([A-Z]{2, })/g, " $1" )
       span.text-gray-400.text-sm.text-center
         | Fill in the parameters (if any) and tap run to execute the transaction.
       div
         each inp in fun.inputs 
           .flex.flex-col.my-6
-            label.form-label.fs-5.mb-4= inp.name.replace( /([A-Z])/g, " $1" )
-            input.px-2.py-2.rounded-md.text-black(placeholder=inp.name.replace( /([A-Z])/g, " $1" )+": "+inp.type+"" id=inp.name)
+            label.form-label.fs-5.mb-4= inp.name.replace( /([A-Z]{2, })/g, " $1" )
+            input.px-2.py-2.rounded-md.text-black(placeholder=inp.name.replace( /([A-Z]{2, })/g, " $1" )+": "+inp.type+"" id=inp.name)
 
         if fun.stateMutability === "payable"
           .flex.flex-col
             label.form-label.fs-5.mb-4 This function expects a payment
             input.px-2.py-2.rounded-md.text-black(placeholder="Amount to send in Ethers" id="value")
-      button.inline-block.px-5.py-2.bg-white.rounded-lg.text-black( onclick="wrappedRun()") Run
+      button.inline-block.px-5.py-2.bg-white.rounded-lg.text-black(onclick="wrappedRun()") Run
+      div.flex.flex-col.items-center
+        strong Result: 
+        .text-sm.text-black.bg-white.rounded.px-3.py-1.break-all.my-2(class="sm:text-lg" role='alert' id="response")
+        button.mx-auto.text-md.text-gray-300.underline.cursor-pointer(onclick="copyToClipboard()") copy result to clipboard
       div.w-auto.text-blue-500.mt-5
         a.text-right.flex.gap-2(href="/"+address+"?abi="+abiEncoded+"&network="+network) #[i(data="close")]
           i(data-feather="arrow-left")
           | Back to all functions
-      .mb-3
-        .alert.alert-light.invisible.bg-transparent.text-white.overflow-auto(role='alert' id="response")

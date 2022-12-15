@@ -57,10 +57,10 @@ block content
             br
             span(class="sm:hidden")= title.slice(0,6)+"..."+title.slice(-4)
             span(class="hidden sm:inline-block")= title
-        .container.mx-auto.flex.max-w-screen.flex-wrap.justify-center.my-4(class="sm:justify-start")
+        .container.mx-auto.flex.max-w-screen.flex-wrap.justify-center.mt-4.mb-20(class="sm:justify-start")
             each f in functions
               .bg-gray-200.text-black.rounded.p-4.mx-6.my-3.flex.justify-between.min-w-fit.flex-1(class="sm:mx-3")
                 button.mx-2.btn.btn-link.btn-lg.pin.position-absolute.top-0.end-0(onclick="pinIt(event,'#{f.name}')" id="#{f.name}") 
                   i(data-feather="crosshair")
                 a( href="/#{address}/#{f.name}?abi=#{abiEncoded}&network=#{network}") 
-                  h5.text-black= f.name.replace( /([A-Z])/g, " $1" )
+                  h5.text-black= f.name.replace( /([A-Z]{2, })/g, " $1" )

@@ -1,16 +1,6 @@
 body {
-  background-color: #101f3d;
   color: white;
-}
-
-.nav-link {
-  color: white;
-}
-
-.nav-link :hover {
-  color: white;
-  color: rgba(255, 255, 255, 0.849);
-
+  min-height: 100vh;
 }
 
 .links {
