@@ -9,7 +9,7 @@ block content
         if (wagmi.getAccount().address) {
           run()
         } else {
-          alert("Please connect your wallet!")
+          Toastify({ text: "Please connect your wallet!", gravity: "bottom", position: "left", style : {background : "red"}}).showToast()
         }
       } catch(e){
         console.log(e)
@@ -25,14 +25,14 @@ block content
       console.log(network !== _network.id)
 
       if (network !== _network.id) {
-        alert("You are on the wrong network. Change network & try again!")
+        Toastify({ text: "You are on the wrong network. Change network & try again!", gravity: "bottom", position: "left", style : {background : "red"}}).showToast()
         try {
           await wagmi.switchNetwork({
             chainId: network,
           }) 
         } catch(e) {
           console.log(e)
-          alert("Failed to switch network. Please make sure you're on the right one!")
+          Toastify({ text: "Failed to switch network. Please make sure you're on the right one!", gravity: "bottom", position: "left", style : {background : "red"}}).showToast()
         }
       } else {
         try {
@@ -76,9 +76,9 @@ block content
             const signer = await wagmi.fetchSigner()
 
             const contract = wagmi.getContract({
-                address: "#{address}",
-                abi: !{JSON.stringify(abiJson)},
-                signerOrProvider: signer
+              address: "#{address}",
+              abi: !{JSON.stringify(abiJson)},
+              signerOrProvider: signer
             })
 
             const response = await contract["#{fun.name}"](...args2, { value: ethers.utils.parseEther($("#value").val()) });
@@ -87,7 +87,8 @@ block content
             console.log("Transaction Receipt", txReceipt);
             $("#response").addClass("bg-green-200")
             $("#response").html(JSON.stringify(txReceipt.transactionHash));
-            alert("Txn successful!")
+            Toastify({ text: "Txn successful!", gravity: "bottom", position: "left", style : {background : "green"}}).showToast()
+
             $("#response").html("Transaction Hash: \n\n"+JSON.stringify(txReceipt.transactionHash));
           }
         }
@@ -107,7 +108,8 @@ block content
       $temp.val($("#response").text()).select();
       document.execCommand("copy", false, $temp.val());
       $temp.remove();
-      alert("copied to clipboard")
+      Toastify({ text: "Copied to clipboard!", gravity: "bottom", position: "left", style : {background : "green"}}).showToast()
+
     }
 
 

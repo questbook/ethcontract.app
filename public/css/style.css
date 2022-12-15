@@ -16,6 +16,10 @@ i.bi-circle-fill {
   color: #198754 !important;
 }
 
+#my-canvas {
+  pointer-events: none;
+}
+
 /* .card-pin {
   position: absolute;
   left: 84%;

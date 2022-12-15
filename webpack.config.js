@@ -1,7 +1,7 @@
 const path = require("path");
 
 module.exports = {
-	entry: "./wallet.js",
+	entry: "./w3m-prebundle.js",
 	output: {
 		path: path.resolve(__dirname, "public/js/"),
 		filename: "w3m.js",

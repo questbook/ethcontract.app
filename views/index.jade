@@ -46,6 +46,13 @@ block content
 
     $(function(){
       setPinnedFunctionOnLoad();
+
+      var confettiSettings = { target: 'my-canvas', rotate: true, max: 300, respawn: false, clock: 21 };
+      var confetti = new ConfettiGenerator(confettiSettings);
+      confetti.render();
+
+      //- setTimeout(() => $("#my-canvas").addClass("hidden"), 1000)
+
     });
 
 
@@ -57,10 +64,14 @@ block content
             br
             span(class="sm:hidden")= title.slice(0,6)+"..."+title.slice(-4)
             span(class="hidden sm:inline-block")= title
-        .container.mx-auto.flex.max-w-screen.flex-wrap.justify-center.mt-4.mb-20(class="sm:justify-start")
-            each f in functions
-              .bg-gray-200.text-black.rounded.p-4.mx-6.my-3.flex.justify-between.min-w-fit.flex-1(class="sm:mx-3")
-                button.mx-2.btn.btn-link.btn-lg.pin.position-absolute.top-0.end-0(onclick="pinIt(event,'#{f.name}')" id="#{f.name}") 
-                  i(data-feather="crosshair")
-                a( href="/#{address}/#{f.name}?abi=#{abiEncoded}&network=#{network}") 
-                  h5.text-black= f.name.replace( /([A-Z]{2, })/g, " $1" )
+      h1.text-center.font-bold.mt-2 Functions
+      .container.mx-auto.flex.max-w-screen.flex-wrap.justify-center.mt-4.mb-20(class="sm:justify-start")
+        each f in functions
+          .bg-gray-200.text-black.rounded.p-4.mx-6.my-3.flex.justify-between.min-w-fit.flex-1(class="sm:mx-3")
+            button.mx-2.btn.btn-link.btn-lg.pin.position-absolute.top-0.end-0(onclick="pinIt(event,'#{f.name}')" id="#{f.name}") 
+              i(data-feather="crosshair")
+            a( href="/#{address}/#{f.name}?abi=#{abiEncoded}&network=#{network}") 
+              h5.text-black= f.name.replace( /([A-Z]{2, })/g, " $1" )
+
+      canvas#my-canvas.fixed.h-full.w-screen.top-0
+    
