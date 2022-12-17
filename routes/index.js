@@ -4,7 +4,7 @@ var { storeAbi, retrieveAbi } = require("../models/abi");
 
 var Web3 = require("web3");
 var { getAbiFromEtherscan } = require("../lib");
-const { request } = require("https");
+// const { request } = require("https");
 var web3 = new Web3(process.env.INFURA);
 
 /* GET home page. */
@@ -78,14 +78,14 @@ router.get("/:address", async function (req, res) {
 
 	const functions = abiJson.filter((a) => a.type === "function");
 
-  const pinnedFuncs = functions.filter((f) => pinned.split(',').includes(f.name));
-  const unPinnedFuncs = functions.filter((f) => !pinned.split(',').includes(f.name));
-  
+	const pinnedFuncs = functions.filter((f) => pinned.split(",").includes(f.name));
+	const unPinnedFuncs = functions.filter((f) => !pinned.split(",").includes(f.name));
+
 	const variables = abiJson.filter((a) => a.type !== "function" && a.type !== "constructor");
 
 	res.render("index", {
-    pinnedFuncs,
-    unPinnedFuncs,
+		pinnedFuncs,
+		unPinnedFuncs,
 		variables,
 		address: req.params.address,
 		abiEncoded: req.query.abi,
