@@ -1,0 +1,35 @@
+script(src="/js/w3m.js") 
+script.
+    const wagmi = window.wagmi;
+    const w3m = window.w3m;
+    const chains = [wagmi.chains.mainnet, wagmi.chains.polygon, wagmi.chains.arbitrum, wagmi.chains.goerli, wagmi.chains.optimism];
+
+    // Wagmi Core Client
+    const { provider } = wagmi.configureChains(chains, [
+        w3m.walletConnectProvider({ projectId: "30c64d8ec46ca4e39864b78271437d20" }),
+    ]);
+
+    const wagmiClient = wagmi.createClient({
+        autoConnect: true,
+        connectors: w3m.modalConnectors({ appName: "web3Modal", chains }),
+        provider,
+    });
+
+    // Web3Modal and Ethereum Client
+    const ethereumClient = new w3m.EthereumClient(wagmiClient, chains);
+
+    const web3modal = new w3m.Web3Modal(
+        { projectId: "30c64d8ec46ca4e39864b78271437d20", },
+        ethereumClient
+    );
+
+    web3modal.setTheme({
+        themeMode: "dark",
+        themeColor: "blackWhite",
+        themeBackground: "gradient",
+    });
+
+
+div.flex.justify-center.py-4.flex-col.items-center.gap-2
+    w3m-core-button
+

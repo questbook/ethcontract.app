@@ -7,8 +7,10 @@ block content
 
       let pinned = getPinnedFunctions();
       if(pinned && !isPinned(name)) {
+        // add pin
         pinned = `${pinned},${name}`;
       } else if(pinned) {
+        // remove pin
         pinned = pinned.split(',').filter(x=> x !== name).join(',');
       } else {
         pinned = name;
@@ -37,36 +39,49 @@ block content
       let pinned = getPinnedFunctions();
       if(pinned) {
         const funcList = pinned.split(',');
-        funcList.forEach(func=>{
-          $(`#${func}`).children().addClass('bi-pin-angle-fill');
-          $(`#${func}`).children().removeClass('bi-pin-angle');
+        funcList.forEach(func=>{  
+          $(`#${func}`).children().children().attr('fill-rule', 'true');
         });
       }
     }
 
     $(function(){
       setPinnedFunctionOnLoad();
+
+      var confettiSettings = { target: 'my-canvas', rotate: true, max: 300, respawn: false, clock: 21 };
+      var confetti = new ConfettiGenerator(confettiSettings);
+      confetti.render();
+
     });
 
+  include ./wallet
 
-  .div.full-cover-other
-    include ./walletSetup
-    .center-container.d-flex.justify-content-center
-      .container.text-center
-        .row.gy-5.mt-5
-          .col-12
-            span.fs-3 Contract Address : 
-            span.address.fs-4= title
-        button.btn.btn-light.btn-lg.ms-2(style="margin: 24px" onclick="navigator.share({ url: window.location.href, text: window.location.href })") 
-          i.bi.bi-share(id="shareIcon")
-          span &nbsp; Share this UI
-        .container
-          .row.gx-4.gy-3
-            each f in functions
-              .col-3
-                .card.text-center.cardd.rounded-5
-                  .card-body.position-relative.py-5
-                    button.btn.btn-link.btn-lg.pin.position-absolute.top-0.end-0(onclick="pinIt(event,'#{f.name}')" id="#{f.name}") 
-                      i.bi.bi-pin-angle
-                    a.links( href="/#{address}/#{f.name}?abi=#{abiEncoded}&network=#{network}") 
-                      h5.card-title.m-4= f.name.replace( /([A-Z])/g, " $1" )
+  .div
+    .container.text-center.mx-auto
+      span.fs-3.font-bold.text-lg Contract Address 
+      br
+      span(class="sm:hidden")= title.slice(0,6)+"..."+title.slice(-4)
+      span(class="hidden sm:inline-block")= title 
+    if pinnedFuncs.length > 0
+      h1.text-center.font-bold.mt-2 Pinned 
+    .container.mx-auto.flex.max-w-screen.flex-wrap.justify-center.mt-4.mb-20(class="sm:justify-start")
+      each f in pinnedFuncs
+        .bg-gray-200.text-black.rounded.p-4.mx-6.my-3.flex.justify-between.min-w-fit.flex-1(class="sm:mx-3")
+          button.mx-2.btn.btn-link.btn-lg.pin.position-absolute.top-0.end-0(onclick="pinIt(event,'#{f.name}')" id="#{f.name}") 
+            svg(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24")
+              path#pin-icon(fill-rule="evenodd" d="M7.886 1.553a1.75 1.75 0 012.869.604l.633 1.629a5.666 5.666 0 003.725 3.395l3.959 1.131a1.75 1.75 0 01.757 2.92L16.06 15l5.594 5.595a.75.75 0 11-1.06 1.06L15 16.061l-3.768 3.768a1.75 1.75 0 01-2.92-.757l-1.131-3.96a5.667 5.667 0 00-3.395-3.724l-1.63-.633a1.75 1.75 0 01-.603-2.869l6.333-6.333zm6.589 12.912l-.005.005-.005.005-4.294 4.293a.25.25 0 01-.417-.108l-1.13-3.96A7.166 7.166 0 004.33 9.99L2.7 9.356a.25.25 0 01-.086-.41l6.333-6.332a.25.25 0 01.41.086l.633 1.63a7.167 7.167 0 004.71 4.293l3.96 1.131a.25.25 0 01.108.417l-4.293 4.294z")
+            //- i(data-feather="crosshair")
+          a( href="/#{address}/#{f.name}?abi=#{abiEncoded}&network=#{network}") 
+            h5.text-black= f.name.replace( /([A-Z]{2, })/g, " $1" )
+      .w-full   
+        p.text-center.my-2.font-bold Functions
+      each f in unPinnedFuncs
+        .bg-gray-200.text-black.rounded.p-4.mx-6.my-3.flex.justify-between.min-w-fit.flex-1(class="sm:mx-3")
+          button.mx-2.btn.btn-link.btn-lg.pin.position-absolute.top-0.end-0(onclick="pinIt(event,'#{f.name}')" id="#{f.name}") 
+            svg(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24")
+              path#pin-icon(fill-rule="evenodd" d="M7.886 1.553a1.75 1.75 0 012.869.604l.633 1.629a5.666 5.666 0 003.725 3.395l3.959 1.131a1.75 1.75 0 01.757 2.92L16.06 15l5.594 5.595a.75.75 0 11-1.06 1.06L15 16.061l-3.768 3.768a1.75 1.75 0 01-2.92-.757l-1.131-3.96a5.667 5.667 0 00-3.395-3.724l-1.63-.633a1.75 1.75 0 01-.603-2.869l6.333-6.333zm6.589 12.912l-.005.005-.005.005-4.294 4.293a.25.25 0 01-.417-.108l-1.13-3.96A7.166 7.166 0 004.33 9.99L2.7 9.356a.25.25 0 01-.086-.41l6.333-6.332a.25.25 0 01.41.086l.633 1.63a7.167 7.167 0 004.71 4.293l3.96 1.131a.25.25 0 01.108.417l-4.293 4.294z")
+            //- i(data-feather="crosshair")
+          a( href="/#{address}/#{f.name}?abi=#{abiEncoded}&network=#{network}") 
+            h5.text-black= f.name.replace( /([A-Z]{2, })/g, " $1" )
+
+    canvas#my-canvas.fixed.h-full.w-screen.top-0

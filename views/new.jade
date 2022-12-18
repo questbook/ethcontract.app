@@ -1,23 +1,20 @@
 extends layout
 
 block content
-    .div.full-cover-other
-        .center-container.d-flex.justify-content-center
-            .container.text-center.form-container
-                form(action="/new", method="post") 
-                    .mb-5
-                        label.form-label.h4.mb-4(for='contractAddress') Contract Address
-                        input#contractAddress.form-control.form-control-lg(name="address" type="text" placeholder=" ")
-                    .mb-5
-                        label.form-label.h4.mb-4(for='contractNetwork') Contract Network
-                        select#contractNetwork.form-control.form-control-lg(name="network" type="text")
-                            option(value="1") Ethereum Mainnet
-                            option(value="10") Optimism Mainnet 
-                            option(value="137") Polygon Mainnet
-                            option(value="42161") Arbitrum Mainnet
-                            option(value="5") Goerli Testnet
-                    .mb-5
-                        label.form-label.h4.mb-4(for='contractABI') Contract ABI
-                        textarea#contractABI.form-control.form-control-lg(name="abi" type="text" rows="4")
-                    .mb-3.mt-5.d-grid.gap-2.col-4.mx-auto
-                        button.btn.btn-light.btn-lg(type="submit") Create UI
+    form.container.flex.flex-col.gap-10.mx-auto.p-2.my-5.items-center.justify-center(action="/new" method="post" class="h-[85vh]") 
+        .flex.flex-col(class="w-[60%]")
+            label.form-label.h4.mb-4.text-lg(for='contractAddress') Contract Address *
+            input#contractAddress.px-2.py-2.rounded-md.text-black(name="address" type="text" placeholder=" ")
+        .flex.flex-col(class="w-[60%]")
+            label.form-label.h4.mb-4.text-lg(for='contractNetwork') Contract Network *
+            select#contractNetwork.px-2.py-2.rounded-md.text-black(name="network" type="text")
+                option(value="1") Ethereum Mainnet
+                option(value="10") Optimism Mainnet 
+                option(value="137") Polygon Mainnet
+                option(value="42161") Arbitrum Mainnet
+                option(value="5") Goerli Testnet
+        .flex.flex-col(class="w-[60%]")
+            label.form-label.h4.mb-4.text-lg(for='contractABI') Contract ABI
+            textarea#contractABI.px-2.py-2.rounded-md.text-black(name="abi" type="text" rows="4")
+        .flex.flex-col(class="w-[60%]")
+            button.px-4.py-3.bg-white.rounded-lg.text-black.font-semibold(type="submit") Create UI

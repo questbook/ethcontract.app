@@ -1,16 +1,6 @@
 body {
-  background-color: #01205c;
   color: white;
-}
-
-.nav-link {
-  color: white;
-}
-
-.nav-link :hover {
-  color: white;
-  color: rgba(255, 255, 255, 0.849);
-
+  min-height: 100vh;
 }
 
 .links {
@@ -26,7 +16,11 @@ i.bi-circle-fill {
   color: #198754 !important;
 }
 
-.card-pin {
+#my-canvas {
+  pointer-events: none;
+}
+
+/* .card-pin {
   position: absolute;
   left: 84%;
   bottom: 62%;
@@ -86,4 +80,4 @@ i.bi-circle-fill {
   border: 1px solid #f9fafb;
   padding: 0.5em;
   border-radius: 3px;
-}
+} */

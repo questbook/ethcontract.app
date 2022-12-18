@@ -1,13 +1,10 @@
 extends layout
 
 block content
-  .div.full-cover-other
-    .masthead.d-flex.justify-content-center.align-items-center
-        .container.d-flex.justify-content-center.align-items-center
-            .row.justify-content-center.text-center
-                .col-12.justify-content-center
-                  h3.h3 Something went wrong 
-                .col-12
-                  .mb-3.mt-5.d-grid.gap-2.col-6.mx-auto
-                    button.btn.btn-light.btn-lg(onclick="window.history.back()") Go Back 
-                    a.btn.btn-outline-light.btn-lg(href="/new") Explore a new contract
+  .div.flex.flex-col.justfiy-center.items-center.m-10.gap-5
+                h3.font-bold.text-3xl Something went wrong 
+                        #{error}
+                img(src="https://media3.giphy.com/media/qaDbEDavgvKBs5jJc5/giphy.gif?cid=ecf05e47ubm22d8o4bfrosb0ylx3md6xdjgwske4mu0e9uz6&rid=giphy.gif&ct=g")
+                .flex.gap-2.mx-auto
+                    button.underline.text-blue-500(onclick="window.history.back()") Go Back 
+                    a.underline.text-blue-500(href="/new") Explore a new contract
